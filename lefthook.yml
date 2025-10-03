@@ -1,52 +1,28 @@
+assert_lefthook_installed: true
+files: git diff --name-only master
+
 pre-commit:
   parallel: true
-  scripts:
-    go-fmt:
+  jobs:
+    - name: staticcheck
       glob: "*.go"
-      run: go fmt ${LEFTHOOK_GIT_STAGED}
-    go-vet:
-      run: go vet ./...
-    go-test:
+      run: staticcheck ./...
+    - name: err-check
+      glob: "*.go"
+      run: errcheck ./...
+    - name: golangci-lint
+      glob: "*.go"
+      stage_fixed: true
+      run: golangci-lint run --lint
+    - name: go-test
+      glob: "*.go"
       run: go test ./...
-# EXAMPLE USAGE:
-#
-#   Refer for explanation to following link:
-#   https://lefthook.dev/configuration/
-#
-# pre-push:
-#   jobs:
-#     - name: packages audit
-#       tags:
-#         - frontend
-#         - security
-#       run: yarn audit
-#
-#     - name: gems audit
-#       tags:
-#         - backend
-#         - security
-#       run: bundle audit
-#
-# pre-commit:
-#   parallel: true
-#   jobs:
-#     - run: yarn eslint {staged_files}
-#       glob: "*.{js,ts,jsx,tsx}"
-#
-#     - name: rubocop
-#       glob: "*.rb"
-#       exclude:
-#         - config/application.rb
-#         - config/routes.rb
-#       run: bundle exec rubocop --force-exclusion {all_files}
-#
-#     - name: govet
-#       files: git ls-files -m
-#       glob: "*.go"
-#       run: go vet {files}
-#
-#     - script: "hello.js"
-#       runner: node
-#
-#     - script: "hello.go"
-#       runner: go run
+pre-push:
+  parallel: true
+  jobs:
+    - name: delve-test
+      glob: "*.go"
+      run: dlv test ./... --headless --listen=:40000 --log
+    - name: pprof-test
+      glob: "*.go"
+      run: go test -cpuprofile=cpu.out -memprofile=mem.out ./...

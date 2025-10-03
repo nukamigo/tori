@@ -9,3 +9,5 @@ Tori is a project based on Zuul (a Project gating CI system) written in Go
 2. Debugging
    1. [Delve](https://github.com/go-delve/delve)
    2. [pprof](https://pkg.go.dev/net/http/pprof)
+3. Pre-Commit Hooks
+   1. [lefthook](https://lefthook.dev/intro.html)
