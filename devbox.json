@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
   "packages": [
-    "github:dagger/nix/6215bc1f0c3e6337557cd2660bc81835431fc6f2#packages.x86_64-linux.dagger",
+    "github:dagger/nix/474769abf51cdb9dc460030632ef28ff8a43c2f5#packages.x86_64-linux.dagger",
     "go@1.25.0",
     "gh@2.79.0",
     "golangci-lint@2.4.0",
