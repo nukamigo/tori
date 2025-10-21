@@ -1,0 +1,60 @@
+assert_lefthook_installed: true
+
+pre-commit:
+  parallel: true
+  commands:
+    go-fmt:
+      glob: "*.go"
+      run: gofmt -l -d .
+      fail_text: "Go files are not properly formatted. Run 'gofmt -w .'"
+    
+    go-mod-tidy:
+      glob: "{go.mod,go.sum,*.go}"
+      run: go mod tidy && git diff --exit-code go.mod go.sum
+      fail_text: "go.mod or go.sum need to be updated. Run 'go mod tidy'"
+    
+    staticcheck:
+      glob: "*.go"
+      run: staticcheck ./...
+    
+    errcheck:
+      glob: "*.go"
+      run: errcheck ./...
+    
+    golangci-lint:
+      glob: "*.go"
+      stage_fixed: true
+      run: golangci-lint run --fix
+    
+    go-test:
+      glob: "*.go"
+      run: go test -v -race ./...
+
+pre-push:
+  parallel: false
+  commands:
+    go-test-coverage:
+      glob: "*.go"
+      run: go test -race -coverprofile=coverage.out ./... && go tool cover -func=coverage.out
+    
+    go-vet:
+      glob: "*.go"
+      run: go vet ./...
+    
+    go-build:
+      glob: "*.go"
+      run: go build ./...
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: |
+        commit_regex='^(feat|fix|docs|style|refactor|test|chore|ci|build|perf|revert)(\([a-z0-9_-]+\))?: .{1,}'
+        if ! head -n 1 {1} | grep -qE "$commit_regex"; then
+          echo "❌ Commit message must follow Conventional Commits format:"
+          echo "   type(scope): description"
+          echo ""
+          echo "📋 Valid types: feat, fix, docs, style, refactor, test, chore, ci, build, perf, revert"
+          echo "📝 Example: feat(auth): add user authentication"
+          exit 1
+        fi
