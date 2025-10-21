@@ -8,8 +8,8 @@ Tori is a project based on Zuul (a Project gating CI system) written in Go
 2. **Executor** - The component responsible for actually running jobs on nodes provided by Nodepool. Executors connect to job nodes via SSH, execute the playbooks/tests, and stream logs. They communicate with the scheduler through ZooKeeper and can emit metrics to statsd.
 3. **Merger** - Handles git repository operations like cloning and merging changes. The merger prepares the code for testing by combining proposed changes with the target branch, which is especially important for project gating workflows. 
 4. **Web Server** - Provides the web interface and REST API for Zuul. It connects to the database, GitHub, ZooKeeper, and executors to display build status, logs, and other information to users. 
-5. **Finger Gateway** - Routes live log streams from executors to the web interface, particularly useful when executors are distributed across multiple datacenters or zones where direct connections aren't possible. 
-6. **Finger Gateway** - Routes live log streams from executors to the web interface, particularly useful when executors are distributed across multiple datacenters or zones where direct connections aren't possible.
+5. **Finger Gateway** - Routes live log streams from executors to the web interface, particularly useful when executors are distributed across multiple datacenters or zones where direct connections aren't possible.
+6. **ZooKeeper** - Critical infrastructure component used for distributed coordination between Zuul services. Zuul adopts a microservices architecture, and ZooKeeper underpins this by enabling all the individual processes (like Scheduler, Executor, Web, Nodepool, etc.) to communicate efficiently and maintain state across the cluster.
 7. **Database (External Dependency)** - An external SQL database that both the scheduler and web server use to store and retrieve build history, artifacts, and other persistent data.
 
 ## Tools used for development and installed through devbox
